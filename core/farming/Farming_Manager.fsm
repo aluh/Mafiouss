@@ -1,0 +1,321 @@
+/*%FSM<COMPILE "F:\SteamLibrary\steamapps\common\Arma 3 Tools\FSMEditor\scriptedFSM.cfg, Farming_Manager">*/
+/*%FSM<HEAD>*/
+/*
+item0[] = {"Start_Farming_FS",0,250,247.059631,-202.979889,337.059631,-152.979889,0.000000,"Start" \n "Farming" \n "FSM"};
+item1[] = {"Always",8,218,155.273529,-127.214630,245.273529,-77.214630,0.000000,"Always"};
+item2[] = {"Calculate_Mean_Time",2,250,249.049530,-36.964096,339.049530,13.035904,0.000000,"Calculate Mean" \n "Time Between" \n "Each Plant"};
+item3[] = {"No_Plants_To_Man",4,218,153.754120,45.199844,243.754120,95.199844,0.000000,"No Plants" \n "To Manage"};
+item4[] = {"Plants_Available",4,218,347.192627,45.943893,437.192627,95.943893,1.000000,"Plants Available" \n "To Manage"};
+item5[] = {"Set_time_to_begin",2,250,28.571716,-9.499680,118.571732,40.500320,0.000000,"Set time" \n "to begin" \n "waiting from"};
+item6[] = {"Wait",4,218,134.191010,-55.206291,224.191010,-5.206295,0.000000,"Wait"};
+item7[] = {"All_plants_proce",4,218,249.047241,132.461090,339.047241,182.461090,0.000000,"All plants" \n "processed"};
+item8[] = {"Fetch_next_item",2,250,423.628387,132.461029,513.628418,182.461029,0.000000,"Fetch next" \n "item to" \n "process"};
+item9[] = {"Item_Ready_To_Be",4,4314,335.622681,232.106232,425.622650,282.106262,1.000000,"Item Ready" \n "To Be" \n "Processed"};
+item10[] = {"Process_Item",2,250,450.950653,418.311188,540.950745,468.311188,0.000000,"Process" \n "Item"};
+item11[] = {"User_has_moved_too",4,218,222.125854,417.835266,312.125854,467.835266,3.000000,"User has" \n "moved too" \n "far away"};
+item12[] = {"Plant_has_not_been",4,218,318.839203,558.317627,408.839203,608.317627,1.000000,"Plant has not" \n "been harvested" \n "and has died."};
+item13[] = {"Delete_Object",2,250,133.422867,514.903381,223.422882,564.903381,0.000000,"Delete Object"};
+item14[] = {"Always",8,218,85.309387,263.356750,175.309387,313.356750,0.000000,"Always"};
+item15[] = {"Object_is_idle",8,218,650.619507,418.865845,740.619507,468.865845,0.000000,"Object is" \n "idle"};
+item16[] = {"Increment_Index",2,250,756.248535,272.159546,846.248535,322.159546,0.000000,"Increment" \n "Index"};
+item17[] = {"Plant_Growing",4,218,669.203491,587.089783,759.203491,637.089783,2.000000,"Plant Growing"};
+item18[] = {"Always",8,218,877.525818,457.010254,967.525818,507.010254,0.000000,"Always"};
+item19[] = {"Update_Position",2,250,833.514771,559.705566,923.514771,609.705566,0.000000,"Update Position" \n "of plant"};
+item20[] = {"Always",8,218,593.369995,188.493973,683.369995,238.493988,0.000000,"Always"};
+link0[] = {0,1};
+link1[] = {1,2};
+link2[] = {2,3};
+link3[] = {2,4};
+link4[] = {3,5};
+link5[] = {4,8};
+link6[] = {5,6};
+link7[] = {6,2};
+link8[] = {7,2};
+link9[] = {8,7};
+link10[] = {8,9};
+link11[] = {9,10};
+link12[] = {10,11};
+link13[] = {10,12};
+link14[] = {10,15};
+link15[] = {10,17};
+link16[] = {11,13};
+link17[] = {12,13};
+link18[] = {13,14};
+link19[] = {14,8};
+link20[] = {15,16};
+link21[] = {16,20};
+link22[] = {17,19};
+link23[] = {18,16};
+link24[] = {19,18};
+link25[] = {20,8};
+globals[] = {0.000000,0,0,0,0,640,480,1,29,6316128,1,174.715393,707.337097,345.880676,-69.753418,733,572,1};
+window[] = {2,-1,-1,-32000,-32000,838,78,1518,78,3,751};
+*//*%FSM</HEAD>*/
+class FSM
+{
+        fsmName = "Farming_Manager";
+        class States
+        {
+                /*%FSM<STATE "Start_Farming_FS">*/
+                class Start_Farming_FS
+                {
+                        name = "Start_Farming_FS";
+                        itemno = 0;
+                        init = /*%FSM<STATEINIT""">*/""/*%FSM</STATEINIT""">*/;
+                        precondition = /*%FSM<STATEPRECONDITION""">*/""/*%FSM</STATEPRECONDITION""">*/;
+                        class Links
+                        {
+                                /*%FSM<LINK "Always">*/
+                                class Always
+                                {
+                                        itemno = 1;
+                                        priority = 0.000000;
+                                        to="Calculate_Mean_Time";
+                                        precondition = /*%FSM<CONDPRECONDITION""">*/""/*%FSM</CONDPRECONDITION""">*/;
+                                        condition=/*%FSM<CONDITION""">*/"true"/*%FSM</CONDITION""">*/;
+                                        action=/*%FSM<ACTION""">*/""/*%FSM</ACTION""">*/;
+                                };
+                                /*%FSM</LINK>*/
+                        };
+                };
+                /*%FSM</STATE>*/
+                /*%FSM<STATE "Calculate_Mean_Time">*/
+                class Calculate_Mean_Time
+                {
+                        name = "Calculate_Mean_Time";
+                        itemno = 2;
+                        init = /*%FSM<STATEINIT""">*/"private _itemCount = count life_farming_objects;" \n
+                         "private _growFrequency = getNumber(missionConfigFile >> ""CfgFarming"" >> ""Plants"" >> ""growUpdateFrequency"");" \n
+                         "private _index = 0; "/*%FSM</STATEINIT""">*/;
+                        precondition = /*%FSM<STATEPRECONDITION""">*/""/*%FSM</STATEPRECONDITION""">*/;
+                        class Links
+                        {
+                                /*%FSM<LINK "Plants_Available">*/
+                                class Plants_Available
+                                {
+                                        itemno = 4;
+                                        priority = 1.000000;
+                                        to="Fetch_next_item";
+                                        precondition = /*%FSM<CONDPRECONDITION""">*/""/*%FSM</CONDPRECONDITION""">*/;
+                                        condition=/*%FSM<CONDITION""">*/"_itemCount > 0"/*%FSM</CONDITION""">*/;
+                                        action=/*%FSM<ACTION""">*/""/*%FSM</ACTION""">*/;
+                                };
+                                /*%FSM</LINK>*/
+                                /*%FSM<LINK "No_Plants_To_Man">*/
+                                class No_Plants_To_Man
+                                {
+                                        itemno = 3;
+                                        priority = 0.000000;
+                                        to="Set_time_to_begin";
+                                        precondition = /*%FSM<CONDPRECONDITION""">*/""/*%FSM</CONDPRECONDITION""">*/;
+                                        condition=/*%FSM<CONDITION""">*/"_itemCount < 1"/*%FSM</CONDITION""">*/;
+                                        action=/*%FSM<ACTION""">*/""/*%FSM</ACTION""">*/;
+                                };
+                                /*%FSM</LINK>*/
+                        };
+                };
+                /*%FSM</STATE>*/
+                /*%FSM<STATE "Set_time_to_begin">*/
+                class Set_time_to_begin
+                {
+                        name = "Set_time_to_begin";
+                        itemno = 5;
+                        init = /*%FSM<STATEINIT""">*/"private _time = time;"/*%FSM</STATEINIT""">*/;
+                        precondition = /*%FSM<STATEPRECONDITION""">*/""/*%FSM</STATEPRECONDITION""">*/;
+                        class Links
+                        {
+                                /*%FSM<LINK "Wait">*/
+                                class Wait
+                                {
+                                        itemno = 6;
+                                        priority = 0.000000;
+                                        to="Calculate_Mean_Time";
+                                        precondition = /*%FSM<CONDPRECONDITION""">*/""/*%FSM</CONDPRECONDITION""">*/;
+                                        condition=/*%FSM<CONDITION""">*/"time - _time > 5"/*%FSM</CONDITION""">*/;
+                                        action=/*%FSM<ACTION""">*/""/*%FSM</ACTION""">*/;
+                                };
+                                /*%FSM</LINK>*/
+                        };
+                };
+                /*%FSM</STATE>*/
+                /*%FSM<STATE "Fetch_next_item">*/
+                class Fetch_next_item
+                {
+                        name = "Fetch_next_item";
+                        itemno = 8;
+                        init = /*%FSM<STATEINIT""">*/"private _time = time;"/*%FSM</STATEINIT""">*/;
+                        precondition = /*%FSM<STATEPRECONDITION""">*/""/*%FSM</STATEPRECONDITION""">*/;
+                        class Links
+                        {
+                                /*%FSM<LINK "Item_Ready_To_Be">*/
+                                class Item_Ready_To_Be
+                                {
+                                        itemno = 9;
+                                        priority = 1.000000;
+                                        to="Process_Item";
+                                        precondition = /*%FSM<CONDPRECONDITION""">*/""/*%FSM</CONDPRECONDITION""">*/;
+                                        condition=/*%FSM<CONDITION""">*/"private _count = count life_farming_objects;" \n
+                                         "_count-1 >= _index && time - _time > (_growFrequency / (_count max 1))"/*%FSM</CONDITION""">*/;
+                                        action=/*%FSM<ACTION""">*/"private _item = life_farming_objects select _index;"/*%FSM</ACTION""">*/;
+                                };
+                                /*%FSM</LINK>*/
+                                /*%FSM<LINK "All_plants_proce">*/
+                                class All_plants_proce
+                                {
+                                        itemno = 7;
+                                        priority = 0.000000;
+                                        to="Calculate_Mean_Time";
+                                        precondition = /*%FSM<CONDPRECONDITION""">*/""/*%FSM</CONDPRECONDITION""">*/;
+                                        condition=/*%FSM<CONDITION""">*/"(count life_farming_objects-1) < _index"/*%FSM</CONDITION""">*/;
+                                        action=/*%FSM<ACTION""">*/""/*%FSM</ACTION""">*/;
+                                };
+                                /*%FSM</LINK>*/
+                        };
+                };
+                /*%FSM</STATE>*/
+                /*%FSM<STATE "Process_Item">*/
+                class Process_Item
+                {
+                        name = "Process_Item";
+                        itemno = 10;
+                        init = /*%FSM<STATEINIT""">*/"_item params [" \n
+                         "	[""_plant"", objNull, [objNull]]," \n
+                         "	[""_timeCreated"", serverTime, [serverTime]]," \n
+                         "	[""_lifeTime"", -1, [-1]]," \n
+                         "	[""_maturityTime"", -1, [-1]]," \n
+                         "	[""_groundSinkHeight"", -1, [-1]]," \n
+                         "	[""_finalHeightDiff"", -1, [-1]]," \n
+                         "	[""_initialLocation"", [], [[]]]" \n
+                         "];"/*%FSM</STATEINIT""">*/;
+                        precondition = /*%FSM<STATEPRECONDITION""">*/""/*%FSM</STATEPRECONDITION""">*/;
+                        class Links
+                        {
+                                /*%FSM<LINK "User_has_moved_too">*/
+                                class User_has_moved_too
+                                {
+                                        itemno = 11;
+                                        priority = 3.000000;
+                                        to="Delete_Object";
+                                        precondition = /*%FSM<CONDPRECONDITION""">*/""/*%FSM</CONDPRECONDITION""">*/;
+                                        condition=/*%FSM<CONDITION""">*/"player distance2d _plant > 1000"/*%FSM</CONDITION""">*/;
+                                        action=/*%FSM<ACTION""">*/"diag_log ""DISTANCE CHECK"";"/*%FSM</ACTION""">*/;
+                                };
+                                /*%FSM</LINK>*/
+                                /*%FSM<LINK "Plant_Growing">*/
+                                class Plant_Growing
+                                {
+                                        itemno = 17;
+                                        priority = 2.000000;
+                                        to="Update_Position";
+                                        precondition = /*%FSM<CONDPRECONDITION""">*/""/*%FSM</CONDPRECONDITION""">*/;
+                                        condition=/*%FSM<CONDITION""">*/"serverTime - _timeCreated <= _maturityTime"/*%FSM</CONDITION""">*/;
+                                        action=/*%FSM<ACTION""">*/"diag_log ""GROW"";"/*%FSM</ACTION""">*/;
+                                };
+                                /*%FSM</LINK>*/
+                                /*%FSM<LINK "Plant_has_not_been">*/
+                                class Plant_has_not_been
+                                {
+                                        itemno = 12;
+                                        priority = 1.000000;
+                                        to="Delete_Object";
+                                        precondition = /*%FSM<CONDPRECONDITION""">*/""/*%FSM</CONDPRECONDITION""">*/;
+                                        condition=/*%FSM<CONDITION""">*/"serverTime - _timeCreated > _lifeTime"/*%FSM</CONDITION""">*/;
+                                        action=/*%FSM<ACTION""">*/"diag_log ""NOT HARVESTED - DIED"";"/*%FSM</ACTION""">*/;
+                                };
+                                /*%FSM</LINK>*/
+                                /*%FSM<LINK "Object_is_idle">*/
+                                class Object_is_idle
+                                {
+                                        itemno = 15;
+                                        priority = 0.000000;
+                                        to="Increment_Index";
+                                        precondition = /*%FSM<CONDPRECONDITION""">*/""/*%FSM</CONDPRECONDITION""">*/;
+                                        condition=/*%FSM<CONDITION""">*/"true"/*%FSM</CONDITION""">*/;
+                                        action=/*%FSM<ACTION""">*/""/*%FSM</ACTION""">*/;
+                                };
+                                /*%FSM</LINK>*/
+                        };
+                };
+                /*%FSM</STATE>*/
+                /*%FSM<STATE "Delete_Object">*/
+                class Delete_Object
+                {
+                        name = "Delete_Object";
+                        itemno = 13;
+                        init = /*%FSM<STATEINIT""">*/"deleteVehicle _plant;" \n
+                         "life_farming_objects deleteAt _index;"/*%FSM</STATEINIT""">*/;
+                        precondition = /*%FSM<STATEPRECONDITION""">*/""/*%FSM</STATEPRECONDITION""">*/;
+                        class Links
+                        {
+                                /*%FSM<LINK "Always">*/
+                                class Always
+                                {
+                                        itemno = 14;
+                                        priority = 0.000000;
+                                        to="Fetch_next_item";
+                                        precondition = /*%FSM<CONDPRECONDITION""">*/""/*%FSM</CONDPRECONDITION""">*/;
+                                        condition=/*%FSM<CONDITION""">*/"true"/*%FSM</CONDITION""">*/;
+                                        action=/*%FSM<ACTION""">*/""/*%FSM</ACTION""">*/;
+                                };
+                                /*%FSM</LINK>*/
+                        };
+                };
+                /*%FSM</STATE>*/
+                /*%FSM<STATE "Increment_Index">*/
+                class Increment_Index
+                {
+                        name = "Increment_Index";
+                        itemno = 16;
+                        init = /*%FSM<STATEINIT""">*/"_index = _index + 1;"/*%FSM</STATEINIT""">*/;
+                        precondition = /*%FSM<STATEPRECONDITION""">*/""/*%FSM</STATEPRECONDITION""">*/;
+                        class Links
+                        {
+                                /*%FSM<LINK "Always">*/
+                                class Always
+                                {
+                                        itemno = 20;
+                                        priority = 0.000000;
+                                        to="Fetch_next_item";
+                                        precondition = /*%FSM<CONDPRECONDITION""">*/""/*%FSM</CONDPRECONDITION""">*/;
+                                        condition=/*%FSM<CONDITION""">*/""/*%FSM</CONDITION""">*/;
+                                        action=/*%FSM<ACTION""">*/""/*%FSM</ACTION""">*/;
+                                };
+                                /*%FSM</LINK>*/
+                        };
+                };
+                /*%FSM</STATE>*/
+                /*%FSM<STATE "Update_Position">*/
+                class Update_Position
+                {
+                        name = "Update_Position";
+                        itemno = 19;
+                        init = /*%FSM<STATEINIT""">*/"private _growthPcnt = (serverTime - _timeCreated) / _maturityTime;" \n
+                         "private _finalOffset = _groundSinkHeight + abs(_finalHeightDiff * _growthPcnt);" \n
+                         "" \n
+                         "diag_log format[""_growthPcnt = %1, _finalOffset = %2, _initialLocation = %3"", _growthPcnt, _finalOffset, _initialLocation];" \n
+                         "" \n
+                         "_plant setPosATL (_initialLocation vectorAdd [0, 0, _finalOffset]);"/*%FSM</STATEINIT""">*/;
+                        precondition = /*%FSM<STATEPRECONDITION""">*/""/*%FSM</STATEPRECONDITION""">*/;
+                        class Links
+                        {
+                                /*%FSM<LINK "Always">*/
+                                class Always
+                                {
+                                        itemno = 18;
+                                        priority = 0.000000;
+                                        to="Increment_Index";
+                                        precondition = /*%FSM<CONDPRECONDITION""">*/""/*%FSM</CONDPRECONDITION""">*/;
+                                        condition=/*%FSM<CONDITION""">*/"true"/*%FSM</CONDITION""">*/;
+                                        action=/*%FSM<ACTION""">*/""/*%FSM</ACTION""">*/;
+                                };
+                                /*%FSM</LINK>*/
+                        };
+                };
+                /*%FSM</STATE>*/
+        };
+        initState="Start_Farming_FS";
+        finalStates[] =
+        {
+        };
+};
+/*%FSM</COMPILE>*/
